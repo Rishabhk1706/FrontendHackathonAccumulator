@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">🏠</div>
+          <h1>Dashboard</h1>
+        </div>
+        <div class="profile-menu">
+          <div class="profile-trigger" onclick="toggleProfileMenu()">
+            <div class="profile-info">
+              <div class="profile-name">Loading...</div>
+              <div class="profile-role">Loading...</div>
+            </div>
+            <img src="profile.jpg" alt="Profile" class="profile-photo" />
+          </div>
+          <div class="dropdown-menu" id="profileDropdown">
+            <div class="dropdown-item" onclick="navigateTo('/profile/:id')">
+              <span>👤</span>
+              <span>My Profile</span>
+            </div>
+            <div class="dropdown-item" onclick="logout()">
+              <span>🚪</span>
+              <span>Logout</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Upcoming Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Active Projects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Match Requests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Total Events</div>
+      </div>
+    </div>
+
+    <!-- Navigation Cards -->
+    <div class="main-content">
+      <!-- Events -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📅</div>
+          <div class="card-title">Events</div>
+        </div>
+        <div class="menu-list">
+          <div class="menu-item" onclick="navigateTo('/events')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">All Events</div>
+              <div class="menu-item-desc">Browse upcoming/past events</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+          <div class="menu-item" onclick="navigateTo('/events/new')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">Post an Event</div>
+              <div class="menu-item-desc">Clubs/students create events</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match Requests -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">Match Requests</div>
+        </div>
+        <div class="menu-list">
+          <div class="menu-item" onclick="navigateTo('/match-requests')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">View All Requests</div>
+              <div class="menu-item-desc">See all match requests</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+          <div class="menu-item" onclick="navigateTo('/match-requests/new')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">Create Request</div>
+              <div class="menu-item-desc">Team-finding request for event</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">💼</div>
+          <div class="card-title">Projects</div>
+        </div>
+        <div class="menu-list">
+          <div class="menu-item" onclick="navigateTo('/projects')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">Project Listings</div>
+              <div class="menu-item-desc">View posted projects</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+          <div class="menu-item" onclick="navigateTo('/projects/new')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">Post a Project</div>
+              <div class="menu-item-desc">Share a new project idea</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Access -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">⚙️</div>
+          <div class="card-title">Quick Access</div>
+        </div>
+        <div class="menu-list">
+          <div class="menu-item" onclick="navigateTo('/dashboard')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">Dashboard Home</div>
+              <div class="menu-item-desc">Personalized overview</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+          <div class="menu-item" onclick="navigateTo('/profile/:id')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">Profile Settings</div>
+              <div class="menu-item-desc">View/update your profile</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle profile dropdown
+    function toggleProfileMenu() {
+        document.getElementById("profileDropdown").classList.toggle("active");
+        document.querySelector(".profile-trigger").classList.toggle("active");
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+        const profileMenu = document.querySelector(".profile-menu");
+        if (!profileMenu.contains(e.target)) {
+        document.getElementById("profileDropdown").classList.remove("active");
+        document.querySelector(".profile-trigger").classList.remove("active");
+        }
+    });
+
+    // Navigation placeholder
+    function navigateTo(route) {
+        if (route === '/profile/:id') {
+            window.location.href = 'profile.html';
+        }
+        else if (route === '/dashboard'){
+            window.location.href = 'dashboard.html';
+        }
+        else {
+            window.location.href = route;
+        }
+
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+    }
+
+    async function loadDashboard() {
+        const token = localStorage.getItem("token");
+        const userStr = localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : null;
+        const userId = user?._id;
+
+        if (!token || !userId) {
+        alert("Please login first.");
+        return (window.location.href = "login.html");
+        }
+
+        try {
+        // Set profile info
+        document.querySelector(".profile-name").textContent = user.name;
+        document.querySelector(".profile-role").textContent = user.role || "Student";
+
+        // Events
+        const eventsRes = await axios.get("http://localhost:3000/api/events", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const allEvents = eventsRes.data;
+        const now = new Date();
+        const upcomingEvents = allEvents.filter(e => {
+            const eventDate = new Date(e.startDate);
+            return !isNaN(eventDate) && eventDate > new Date();
+        }).length;
+        const totalEvents = allEvents.length;
+
+        // Projects
+        const projectsRes = await axios.get("http://localhost:3000/api/projects", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const activeProjects = projectsRes.data.length;
+
+        // Match Requests
+        const matchRes = await axios.get("http://localhost:3000/api/match-requests", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const matchRequests = matchRes.data.length;
+
+        // Fill stats
+        const numbers = [upcomingEvents, activeProjects, matchRequests, totalEvents];
+        document.querySelectorAll(".stat-number").forEach((el, i) => {
+            el.textContent = numbers[i];
+        });
+        } catch (err) {
+        console.error("Dashboard error:", err);
+        alert("Session expired or network error.");
+        window.location.href = "login.html";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadDashboard();
+
+        // Optional animation
+        const cards = document.querySelectorAll(".card");
+        const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+            }
+        });
+        });
+
+        cards.forEach(card => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        card.style.transition = "all 0.6s ease";
+        observer.observe(card);
+        });
+    });
+  </script>
+</body>
+</html>

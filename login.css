@@ -1,0 +1,273 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #BA447D 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  height: 350px;
+  background: #1e1a25;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.left-link {
+  flex: 1;
+  display: block;
+  height: 100%;
+}
+
+.left-panel {
+  width: 100%;
+  height: 100%;
+  background: url('logo.jpg') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgb(12, 10, 48);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+.right-panel {
+  flex: 1;
+  padding: 35px;
+  background-color: rgb(12, 10, 48);
+}
+
+.right-panel h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.sub-text {
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.sub-text a {
+  color: #a188ff;
+  text-decoration: none;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="email"] {
+  padding: 12px;
+  background: #2e2938;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+/* ✅ Password Input Container + Eye Icon */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 40px;
+  background: #2e2938;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #aaa;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: white;
+}
+
+.terms {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.forgot-link {
+  color: #a188ff;
+  text-decoration: none;
+}
+
+.create-btn {
+  padding: 12px;
+  background: #7e5bef;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-btn:hover {
+  background-color: #4b4453;
+}
+
+/* ========== Responsive Styles ========== */
+
+@media (max-width: 1024px) {
+  .container {
+    height: auto;
+    flex-direction: column;
+    max-width: 90%;
+  }
+
+  .left-link {
+    height: 200px;
+  }
+
+  .left-panel {
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    height: 200px;
+    background-position: center;
+  }
+
+  .right-panel {
+    padding: 30px 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    width: 95%;
+    border-radius: 15px;
+  }
+
+  .right-panel h2 {
+    font-size: 1.5rem;
+  }
+
+  .sub-text {
+    font-size: 0.85rem;
+  }
+
+  input[type="email"],
+  .password-container input {
+    font-size: 0.95rem;
+  }
+
+  .terms {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .create-btn {
+    font-size: 0.95rem;
+  }
+
+  .back-btn {
+    top: 10px;
+    left: 10px;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+
+  .toggle-password {
+    font-size: 1.1rem;
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: none;
+    height: auto;
+    margin-top: -50px;
+  }
+
+  .left-panel {
+    height: 115px;
+  }
+
+  .right-panel {
+    padding: 20px;
+  }
+
+  .right-panel h2 {
+    font-size: 1.4rem;
+  }
+
+  input[type="email"],
+  .password-container input {
+    padding: 10px;
+  }
+
+  .create-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .toggle-password {
+    font-size: 1rem;
+  }
+
+  .terms {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+  }
+}
