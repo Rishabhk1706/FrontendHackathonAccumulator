@@ -182,28 +182,38 @@ h1 {
 
 .status-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
+  background: #eee;
+  color: #333;
+  margin: 0.25rem 0.5rem 0.25rem 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
 }
 
 .status-active {
   background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  color: white;
+  color: #fff;
 }
 
 .status-completed {
   background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  color: white;
+  color: #fff;
 }
 
 .status-pending {
   background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  color: white;
+  color: #fff;
 }
+
 
 .loading {
   text-align: center;

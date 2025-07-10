@@ -13,7 +13,7 @@
       <a href="dashboard.html" class="logo">Hackathon Accumulator</a>
       <ul class="nav-links">
         <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="#">All Events</a></li>
+        <li><a href="allevents.html">Events</a></li>
         <li><a href="profile.html">Profile</a></li>
         <li><a href="#" onclick="logout()">Logout</a></li>
       </ul>
@@ -117,6 +117,14 @@
       return `<span class="${className}">${status || 'Unknown'}</span>`;
     }
 
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(-2);
+      return `${day}/${month}/${year}`;
+    }
+
     async function loadProjects() {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -149,7 +157,7 @@
             <p>Status: ${getStatusBadge(project.status)}</p>
             <p><strong>Posted by:</strong> ${userInfo.name || "Unknown"}</p>
             <p><strong>College:</strong> ${userInfo.college?.name || "Not specified"}</p>
-            <p><strong>Created:</strong> ${new Date(project.createdAt).toLocaleDateString()}</p>
+            <p><strong>Created:</strong> ${formatDate(project.createdAt)}</p>
           `;
           
           // Make item clickable
