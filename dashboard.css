@@ -11,7 +11,7 @@ body {
     overflow-x: hidden;
     margin: 0;
     padding: 0;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #BA447D 50%, #764ba2 60%);
 }
 
 .dashboard-container {
@@ -173,6 +173,7 @@ body {
 
 /* Stats Cards */
 .stats-grid {
+    margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;

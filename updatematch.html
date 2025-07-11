@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Match Requests</title>
+  <link rel="stylesheet" href="updatematch.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+  <div class="top-buttons">
+    <button onclick="window.location.href='creatematch.html'">Back</button>
+  </div>
+
+  <div class="container">
+    <h1>Your Match Requests</h1>
+    <div id="requests"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Edit Match Request</h2>
+      <label>Max Team Size:</label>
+      <input type="number" id="editSize" />
+      <label>Roles (comma-separated):</label>
+      <input type="text" id="editRoles" />
+      <label>Skills (comma-separated):</label>
+      <input type="text" id="editSkills" />
+      <div class="modal-actions">
+        <button onclick="submitUpdate()">Save</button>
+        <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    let currentEditId = null;
+
+    if (!token || !user?._id) {
+      alert("Please login first.");
+      window.location.href = "login.html";
+    }
+
+    async function loadRequests() {
+      try {
+        const res = await axios.get("http://localhost:3000/api/match-requests", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const requests = res.data.filter(req =>
+          req.user?._id === user._id &&
+          req.event?.startDate &&
+          new Date(req.event.startDate) > new Date()
+        );
+
+        const container = document.getElementById("requests");
+        container.innerHTML = requests.length === 0 ? "<p>No match requests found for upcoming events.</p>" : "";
+
+        requests.forEach(req => {
+          const div = document.createElement("div");
+          div.className = "request-card";
+          div.innerHTML = `
+            <strong>Event:</strong> ${req.event.title}<br>
+            <strong>Max Team Size:</strong> ${req.maxTeamSize}<br>
+            <strong>Roles:</strong> ${req.lookingForRoles.join(", ")}<br>
+            <strong>Skills:</strong> ${req.skills.join(", ")}<br>
+            <div class="actions">
+              <button onclick="openModal('${req._id}', ${req.maxTeamSize}, '${req.lookingForRoles.join(", ")}', '${req.skills.join(", ")}')">Update</button>
+              <button onclick="deleteRequest('${req._id}')">Delete</button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        console.error("Error loading match requests:", err);
+        document.getElementById("requests").innerHTML = "<p>Failed to load match requests.</p>";
+      }
+    }
+
+    async function deleteRequest(id) {
+      if (confirm("Are you sure you want to delete this match request?")) {
+        try {
+          await axios.delete(`http://localhost:3000/api/match-requests/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          alert("Deleted successfully");
+          loadRequests();
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("Failed to delete request");
+        }
+      }
+    }
+
+    function openModal(id, size, roles, skills) {
+      currentEditId = id;
+      document.getElementById("editSize").value = size;
+      document.getElementById("editRoles").value = roles;
+      document.getElementById("editSkills").value = skills;
+      document.getElementById("editModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("editModal").classList.add("hidden");
+      currentEditId = null;
+    }
+
+    async function submitUpdate() {
+      const size = parseInt(document.getElementById("editSize").value);
+      const roles = document.getElementById("editRoles").value.split(",").map(s => s.trim()).filter(Boolean);
+      const skills = document.getElementById("editSkills").value.split(",").map(s => s.trim()).filter(Boolean);
+
+      if (!size || isNaN(size)) return alert("Invalid team size.");
+
+      try {
+        await axios.put(`http://localhost:3000/api/match-requests/${currentEditId}`, {
+          maxTeamSize: size,
+          lookingForRoles: roles,
+          skills: skills
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        closeModal();
+        alert("Updated successfully");
+        loadRequests();
+      } catch (err) {
+        console.error("Update failed:", err);
+        alert("Failed to update request");
+      }
+    }
+
+    loadRequests();
+  </script>
+</body>
+</html>
