@@ -146,10 +146,10 @@
             </div>
             <div class="menu-item-arrow">→</div>
           </div>
-          <div class="menu-item" onclick="navigateTo('/profile/:id')">
+          <div class="menu-item" onclick="navigateTo('/colleges')">
             <div class="menu-item-content">
-              <div class="menu-item-title">Profile Settings</div>
-              <div class="menu-item-desc">View/update your profile</div>
+              <div class="menu-item-title">Colleges</div>
+              <div class="menu-item-desc">View Colleges</div>
             </div>
             <div class="menu-item-arrow">→</div>
           </div>
@@ -190,6 +190,12 @@
         }
         else if (route === '/events'){
             window.location.href = 'allevents.html';
+        }
+        else if (route === '/events/new'){
+            window.location.href = 'createevent.html';
+        }
+        else if (route === '/colleges'){
+            window.location.href = 'colleges.html';
         }
         else {
             window.location.href = route;
