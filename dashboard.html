@@ -16,6 +16,7 @@
           <div class="logo-icon">🏠</div>
           <h1>Dashboard</h1>
         </div>
+        
         <div class="profile-menu">
           <div class="profile-trigger" onclick="toggleProfileMenu()">
             <div class="profile-info">
@@ -40,15 +41,15 @@
 
     <!-- Stats Section -->
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-card" onclick="navigateTo('/events')">
         <div class="stat-number">0</div>
         <div class="stat-label">Upcoming Events</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="navigateTo('/projects')">
         <div class="stat-number">0</div>
         <div class="stat-label">Active Projects</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="navigateTo('/match-requests')">
         <div class="stat-number">0</div>
         <div class="stat-label">Match Requests</div>
       </div>
@@ -139,17 +140,21 @@
           <div class="card-title">Quick Access</div>
         </div>
         <div class="menu-list">
-          <div class="menu-item" onclick="navigateTo('/dashboard')">
+          <div class="menu-item" onclick="navigateTo('/home')">
             <div class="menu-item-content">
-              <div class="menu-item-title">Dashboard Home</div>
-              <div class="menu-item-desc">Personalized overview</div>
+              <div class="menu-item-title">Home</div>
+            </div>
+            <div class="menu-item-arrow">→</div>
+          </div>
+          <div class="menu-item" onclick="navigateTo('/about')">
+            <div class="menu-item-content">
+              <div class="menu-item-title">About</div>
             </div>
             <div class="menu-item-arrow">→</div>
           </div>
           <div class="menu-item" onclick="navigateTo('/colleges')">
             <div class="menu-item-content">
               <div class="menu-item-title">Colleges</div>
-              <div class="menu-item-desc">View Colleges</div>
             </div>
             <div class="menu-item-arrow">→</div>
           </div>
@@ -157,6 +162,36 @@
       </div>
     </div>
   </div>
+  <footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Hackathon Accumulator</h3>
+            <p>Empowering students to connect, create, and collaborate in the world of technology and innovation.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <p><a href="about.html">About Us</a></p>
+            <p><a href="colleges.html">Explore Colleges</a></p>
+            <p><a href="allevents.html">Browse Events</a></p>
+            <p><a href="allprojects.html">View Projects</a></p>
+        </div>
+        <div class="footer-section">
+            <h3>For Students</h3>
+            <p><a href="create.html">Sign Up</a></p>
+            <p><a href="login.html">Login</a></p>
+            <p><a href="dashboard.html">Dashboard</a></p>
+            <p><a href="/help">Help Center</a></p>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>Email: hello@hackathonaccumulator.com</p>
+            <p>Follow us on social media for updates and announcements.</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Hackathon Accumulator. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script>
     // Toggle profile dropdown
@@ -188,6 +223,9 @@
         else if (route === '/projects'){
             window.location.href = 'allprojects.html';
         }
+        else if (route === '/projects/new'){
+            window.location.href = 'createproject.html';
+        }
         else if (route === '/events'){
             window.location.href = 'allevents.html';
         }
@@ -196,6 +234,12 @@
         }
         else if (route === '/colleges'){
             window.location.href = 'colleges.html';
+        }
+        else if (route === '/home'){
+            window.location.href = 'home.html';
+        }
+        else if (route === '/about'){
+            window.location.href = 'about.html';
         }
         else {
             window.location.href = route;
@@ -235,13 +279,14 @@
             const eventDate = new Date(e.startDate);
             return !isNaN(eventDate) && eventDate > new Date();
         }).length;
+
         const totalEvents = allEvents.length;
 
         // Projects
         const projectsRes = await axios.get("http://localhost:3000/api/projects", {
             headers: { Authorization: `Bearer ${token}` }
         });
-        const activeProjects = projectsRes.data.length;
+        const activeProjects = projectsRes.data.filter(p => p.status === "Open").length;
 
         // Match Requests
         const matchRes = await axios.get("http://localhost:3000/api/match-requests", {

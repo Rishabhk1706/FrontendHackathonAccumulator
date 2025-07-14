@@ -1,0 +1,129 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #BA447D, #764ba2);
+  color: #fff;
+  padding: 40px 20px;
+  margin: 0;
+}
+
+.top-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.top-buttons button {
+  background: #5b3a91;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.top-buttons button:hover {
+  background: #330e69;
+}
+
+.form-container {
+  background: #fff;
+  color: #1a1a1a;
+  max-width: 600px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  width: 98%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+}
+
+.role-block,
+.availability-block {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.role-block input,
+.availability-block input,
+.availability-block select {
+  flex: 1;
+  min-width: 100px;
+}
+
+button[type="submit"] {
+  display: block;
+  margin: 0 auto;
+  background: #764ba2;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background: #5b3a91;
+}
+
+#addRole,
+#addAvailability {
+  background: #e6e6e6;
+  color: #333;
+  border: none;
+  padding: 8px 14px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+#addRole:hover,
+#addAvailability:hover {
+  background: #ccc;
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  .form-container {
+    padding: 20px;
+  }
+
+  .top-buttons {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .top-buttons button {
+    width: 100%;
+  }
+
+  .role-block,
+  .availability-block {
+    flex-direction: column;
+  }
+}
