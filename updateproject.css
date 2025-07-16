@@ -216,9 +216,9 @@ button:hover {
 /* Responsive */
 @media (max-width: 600px) {
   .top-buttons {
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
-    align-items: center;
+    align-items: stretch;
   }
 
   .container {

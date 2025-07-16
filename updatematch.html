@@ -10,7 +10,8 @@
 <body>
 
   <div class="top-buttons">
-    <button onclick="window.location.href='creatematch.html'">Back</button>
+      <button onclick="window.location.href='dashboard.html'">Dashboard</button>
+      <button onclick="window.location.href='creatematch.html'">Create Team</button>
   </div>
 
   <div class="container">
@@ -18,7 +19,7 @@
     <div id="requests"></div>
   </div>
 
-  <!-- Modal -->
+  <!-- Edit Modal -->
   <div id="editModal" class="modal hidden">
     <div class="modal-content">
       <h2>Edit Match Request</h2>
@@ -31,6 +32,28 @@
       <div class="modal-actions">
         <button onclick="submitUpdate()">Save</button>
         <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applicants Modal -->
+  <div id="applicantsModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Applied Users</h2>
+      <ul id="applicantList"></ul>
+      <div class="modal-actions">
+        <button onclick="closeApplicantsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected Users Modal -->
+  <div id="selectedModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Selected Users</h2>
+      <ul id="selectedList"></ul>
+      <div class="modal-actions">
+        <button onclick="closeSelectedModal()">Close</button>
       </div>
     </div>
   </div>
@@ -71,6 +94,8 @@
             <div class="actions">
               <button onclick="openModal('${req._id}', ${req.maxTeamSize}, '${req.lookingForRoles.join(", ")}', '${req.skills.join(", ")}')">Update</button>
               <button onclick="deleteRequest('${req._id}')">Delete</button>
+              <button onclick="viewApplicants('${req._id}')">Applicants</button>
+              <button onclick="viewSelected('${req._id}')">Selected</button>
             </div>
           `;
           container.appendChild(div);
@@ -78,6 +103,43 @@
       } catch (err) {
         console.error("Error loading match requests:", err);
         document.getElementById("requests").innerHTML = "<p>Failed to load match requests.</p>";
+      }
+    }
+
+    function openModal(id, size, roles, skills) {
+      currentEditId = id;
+      document.getElementById("editSize").value = size;
+      document.getElementById("editRoles").value = roles;
+      document.getElementById("editSkills").value = skills;
+      document.getElementById("editModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("editModal").classList.add("hidden");
+    }
+
+    async function submitUpdate() {
+      const size = parseInt(document.getElementById("editSize").value);
+      const roles = document.getElementById("editRoles").value.split(",").map(r => r.trim()).filter(Boolean);
+      const skills = document.getElementById("editSkills").value.split(",").map(s => s.trim()).filter(Boolean);
+
+      if (!size || isNaN(size)) return alert("Invalid team size.");
+
+      try {
+        await axios.put(`http://localhost:3000/api/match-requests/${currentEditId}`, {
+          maxTeamSize: size,
+          lookingForRoles: roles,
+          skills: skills
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        alert("Updated successfully.");
+        closeModal();
+        loadRequests();
+      } catch (err) {
+        console.error("Update failed:", err);
+        alert("Failed to update request.");
       }
     }
 
@@ -96,42 +158,108 @@
       }
     }
 
-    function openModal(id, size, roles, skills) {
-      currentEditId = id;
-      document.getElementById("editSize").value = size;
-      document.getElementById("editRoles").value = roles;
-      document.getElementById("editSkills").value = skills;
-      document.getElementById("editModal").classList.remove("hidden");
-    }
-
-    function closeModal() {
-      document.getElementById("editModal").classList.add("hidden");
-      currentEditId = null;
-    }
-
-    async function submitUpdate() {
-      const size = parseInt(document.getElementById("editSize").value);
-      const roles = document.getElementById("editRoles").value.split(",").map(s => s.trim()).filter(Boolean);
-      const skills = document.getElementById("editSkills").value.split(",").map(s => s.trim()).filter(Boolean);
-
-      if (!size || isNaN(size)) return alert("Invalid team size.");
-
+    async function viewApplicants(id) {
       try {
-        await axios.put(`http://localhost:3000/api/match-requests/${currentEditId}`, {
-          maxTeamSize: size,
-          lookingForRoles: roles,
-          skills: skills
+        const res = await axios.get(`http://localhost:3000/api/match-requests/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const applicants = res.data.applicants || [];
+        const selected = (res.data.selectedUsers || []).map(u => u.user._id);
+        const list = document.getElementById("applicantList");
+
+        list.innerHTML = applicants.length === 0
+          ? "<p>No applicants yet.</p>"
+          : applicants.map(app => {
+              const isSelected = selected.includes(app.user._id);
+              return `
+                <li>
+                  <strong>Name:</strong> ${app.user.name}<br>
+                  <strong>Email:</strong> ${app.user.email}<br>
+                  <strong>Role:</strong> ${app.role || "N/A"}<br>
+                  <strong>Description:</strong> ${app.description || "N/A"}<br>
+                  <button ${isSelected ? "disabled style='background: gray; cursor: not-allowed'" : ""}
+                    onclick="selectUser('${id}', '${app.user._id}', '${app.role}')">
+                    ${isSelected ? "Selected" : "Select"}
+                  </button>
+                </li>`;
+            }).join("");
+
+        document.getElementById("applicantsModal").classList.remove("hidden");
+      } catch (err) {
+        console.error("Error fetching applicants:", err);
+        alert("Could not load applicants.");
+      }
+    }
+
+    async function selectUser(id, userId, role) {
+      try {
+        await axios.put(`http://localhost:3000/api/match-requests/${id}`, {
+          $push: { selectedUsers: { user: userId, role } }
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        closeModal();
-        alert("Updated successfully");
+        alert("User selected successfully!");
+        viewApplicants(id);
         loadRequests();
       } catch (err) {
-        console.error("Update failed:", err);
-        alert("Failed to update request");
+        console.error("Failed to select user:", err);
+        alert("Select user failed");
       }
+    }
+
+    async function viewSelected(id) {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/match-requests/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const list = document.getElementById("selectedList");
+        const selected = res.data.selectedUsers || [];
+
+        list.innerHTML = selected.length === 0
+          ? "<p>No selected users.</p>"
+          : selected.map(sel => `
+            <li>
+              <strong>Name:</strong> ${sel.user.name}<br>
+              <strong>Email:</strong> ${sel.user.email}<br>
+              <strong>Role:</strong> ${sel.role || "N/A"}<br>
+              <button onclick="removeSelected('${id}', '${sel.user._id}')">Remove</button>
+            </li>`).join("");
+
+        document.getElementById("selectedModal").classList.remove("hidden");
+      } catch (err) {
+        console.error("Error loading selected users:", err);
+        alert("Could not load selected users.");
+      }
+    }
+
+    async function removeSelected(id, userId) {
+      if (!confirm("Remove this user from the selected list?")) return;
+
+      try {
+        await axios.put(`http://localhost:3000/api/match-requests/${id}`, {
+          $pull: { selectedUsers: { user: userId } }
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        alert("User removed from selected list.");
+        viewSelected(id);
+        loadRequests();
+      } catch (err) {
+        console.error("Remove failed:", err);
+        alert("Could not remove user.");
+      }
+    }
+
+    function closeApplicantsModal() {
+      document.getElementById("applicantsModal").classList.add("hidden");
+    }
+
+    function closeSelectedModal() {
+      document.getElementById("selectedModal").classList.add("hidden");
     }
 
     loadRequests();
