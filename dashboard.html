@@ -39,6 +39,21 @@
       </div>
     </header>
 
+    <div class="slideshow-container">
+      <div class="slide fade">
+        <img src="event.png" alt="Slide 1" onclick="navigateTo('/events')" >
+        <div class="caption">Connect with Amazing Peers at our Events</div>
+      </div>
+      <div class="slide fade">
+        <img src="project.png" alt="Slide 2" onclick="navigateTo('/projects')">
+        <div class="caption">Collaborate in Valueable Projects</div>
+      </div>
+      <div class="slide fade">
+        <img src="team.png" alt="Slide 3" onclick="navigateTo('/match-requests')">
+        <div class="caption">Make Teams for the Event</div>
+      </div>
+    </div>
+
     <!-- Stats Section -->
     <div class="stats-grid">
       <div class="stat-card" onclick="navigateTo('/events')">
@@ -132,7 +147,7 @@
         <div class="menu-list">
           <div class="menu-item" onclick="navigateTo('/projects')">
             <div class="menu-item-content">
-              <div class="menu-item-title">All Project</div>
+              <div class="menu-item-title">All Projects</div>
               <div class="menu-item-desc">View posted projects</div>
             </div>
             <div class="menu-item-arrow">→</div>
@@ -359,6 +374,22 @@
         card.style.transition = "all 0.6s ease";
         observer.observe(card);
         });
+    });
+
+    let slideIndex = 0;
+    function showSlides() {
+      const slides = document.getElementsByClassName("slide");
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 }    
+      slides[slideIndex - 1].style.display = "block";  
+      setTimeout(showSlides, 3000); // Change image every 3 seconds
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      showSlides(); // Start the slideshow
     });
   </script>
 </body>

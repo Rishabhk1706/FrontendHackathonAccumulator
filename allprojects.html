@@ -155,7 +155,7 @@
           item.className = "project-item";
           item.innerHTML = `
             <h3>${project.title}</h3>
-            <p>Status: ${getStatusBadge(project.status)}</p>
+            <p><strong>Status:</strong> ${getStatusBadge(project.status)}</p>
             <p><strong>Posted by:</strong> ${userInfo.name || "Unknown"}</p>
             <p><strong>College:</strong> ${userInfo.college?.name || "Not specified"}</p>
             <p><strong>Created:</strong> ${formatDate(project.createdAt)}</p>
